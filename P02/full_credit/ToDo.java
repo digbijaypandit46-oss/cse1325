@@ -1,3 +1,6 @@
+import java.util.Scanner;
+import java.util.Arrays;
+
 public class ToDo {
   static class Item{
     String task;
