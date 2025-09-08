@@ -52,9 +52,21 @@ public class FlashCard {
     public static void main(String[] args) {
  
       Card[] cards = loadDeck();
-      System.out.println("FLASH CARDS/n =====/n Vocabulary terms: /n");
+      System.out.println("FLASH CARDS\n =====\n Vocabulary terms: \n");
       for (int i = 0; i < numCards; i++) {
-        System.out.println(cards[i].getTerm());
+        System.out.println("*"+cards[i].getTerm());
+      }
+      Scanner rScanner = new Scanner(System.in);
+      while(false){
+
+        int randomNumber = random.nextInt(27);
+        System.out.println("Please answer give the term (if you want to stop type stop):");
+        System.out.println(cards[randomNumber].getDefinition());
+        rScanner.nextLine();
+        if(rScanner.equals("stop"))break;
+        if(rScanner.equals(cards[randomNumber].getTerm())){
+          System.out.println("Correct!");
+        }else System.out.println("No the term is: "+ cards[randomNumber].getTerm());
       }
 
     

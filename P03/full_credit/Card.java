@@ -20,5 +20,8 @@ public class Card{
   public String getTerm(){
     return term;
   }
+  public String getDefinition(){
+    return definition;
+  }
 
 }
