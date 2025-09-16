@@ -1,0 +1,34 @@
+@startuml
+
+class TestPolygon {
+  - in : Scanner
+  - rand : Random <<optional>>
+  + main(args : String[])
+}
+
+class Polygon {
+  + MAX_SIDES : int <<final>>
+  - numSides : int
+  - points : Point[]
+  + addPoint(point : Point)
+  + perimeter() : double
+  + toString() : String <<override>>
+  - lineLength(p1 : Point, p2 : Point) : double
+}
+
+class Point {
+  - x : double
+  - y : double
+  + Point(x : double, y : double)
+  + Point()
+  + getX() : double
+  + getY() : double
+  + equals(o : Object) : boolean <<override>>
+  + hashCode() : int <<override>>
+  + toString() : String <<override>>
+}
+
+TestPolygon --> Polygon
+Polygon --> Point
+
+@enduml
