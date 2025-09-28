@@ -34,6 +34,7 @@ public class Comment {
   @Override
   public String toString(){
     StringBuilder sb = new StringBuilder();
+    sb.append("Nested comments\n ===========\n\n");
     sb.append("Comment by "+ author.toString());
     if(inReplyTo!=null){
       sb.append(" in reply to "+ inReplyTo.author.toString());

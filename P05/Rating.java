@@ -22,12 +22,15 @@ public class Rating {
     int noStar = 2606;
     char nS = (char) noStar;
     StringBuilder sb = new StringBuilder();
-    sb.append("For "+stars+"-star: ");
-    for (int i = 0; i < 5; i++) {
-      if(i<=stars){
-        sb.append(s);
-      }else{
-        sb.append(nS);
+    sb.append("Ratings\n =======\n\n");
+    for (int j = 0; j < 5; j++) {
+      sb.append("\nFor "+j+"-star: ");
+      for (int i = 0; i < 5; i++) {
+        if(i<=j){
+          sb.append(s);
+        }else{
+          sb.append(nS);
+        }
       }
     }
     return sb.toString();
