@@ -1,8 +1,10 @@
 import java.util.Objects;
+import java.util.ArrayList;
 
-public class Person {
+public class Person implements Rateable{
   protected String name;
   protected String email;
+  private ArrayList<Rating> ratings;
   Person(String name, String email){
     this.name = name;
     this.email = email;
@@ -28,5 +30,25 @@ public class Person {
   @Override
   public String toString(){
     return name+"("+email+")";
+  }
+
+  @Override
+  public void addRating(Rating rating){
+    ratings.add(rating);
+  }
+
+  @Override
+  public double getAverageRating() {
+    double avg =0;
+    for (int i = 0; i < ratings.size(); i++) {
+      avg = avg + ratings.get(i).getStars();
+    }
+    avg=avg/ratings.size();
+    return avg;
+  }
+
+  @Override
+  public Rating[] getRatings() {
+    return ratings.toArray(new Rating[0]);
   }
 }
