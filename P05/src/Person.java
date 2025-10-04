@@ -1,8 +1,8 @@
 import java.util.Objects;
 
 public class Person {
-  private String name;
-  private String email;
+  protected String name;
+  protected String email;
   Person(String name, String email){
     this.name = name;
     this.email = email;
