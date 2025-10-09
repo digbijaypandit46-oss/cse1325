@@ -21,7 +21,7 @@
   </target>
 
   <target name="javadoc" description="create javadoc">
-      <javadoc packagenames="${packages}"
+      <javadoc packagenames="people,session,rating"
            windowtitle="${appname}"
            sourcepath="${src}"
            destdir="${doc}"

@@ -1,16 +1,44 @@
 package session;
 
+/**
+* Sets the date and time of a session
+*
+* @author Digbijay Pandit
+* @version 1.0
+* @since 1.0
+* @license.agreement Gnu General Public License 3.0
+*/
+
 public class DateRange{
   private String date;
   private String endTime;
   private String startTime;
 
-  DateRange(String date, String endTime, String startTime){
+  /**
+  * Creates a new DateRange Object 
+  *
+  * @param date the date for a session
+  * @param startTime the starting time for a session
+  * @param endTime the end time for a session
+  * @since 1.0
+  */
+
+  public DateRange(String date, String endTime, String startTime){
     this.date =date;
     this.endTime=endTime;
     this.startTime=startTime;
   }
-    DateRange(String date, String startTime, long duration){
+
+  /**
+  * Creates a new DateRange Object and calculates the end time with duration
+  *
+  * @param date the date for a session
+  * @param startTime the startin gtime for a session
+  * @param duration the length of a session in minutes
+  * @since 1.0
+  */
+  
+    public DateRange(String date, String startTime, long duration){
     this.date =date;
     this.startTime=startTime;
     
@@ -22,7 +50,12 @@ public class DateRange{
 
     this.endTime = String.format("%02d:%02d", endHour,endMin);
   }
-
+  /**
+  * Tells you the duration of a session
+  *
+  * @return returns the duration of a session in minutes
+  * @since 1.0
+  */
   public long duration(){
     long min = 0;
 
@@ -35,9 +68,14 @@ public class DateRange{
   
     return min;
   }
-
+  /**
+  * Turns all the important time info about the class into a string
+  *
+  * @return returns the date start and end time as well as the duration of a session in minutes
+  * @since 1.0
+  */
   @Override
   public String toString(){
-    return date+" "+startTime+" - "+endTime +" ("+duration()+")";
+    return date+" "+startTime+" - "+endTime +" ("+duration()+" minutes)";
   }
 }
