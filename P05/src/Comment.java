@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-
 public class Comment {
   private String text;
   private Person author;

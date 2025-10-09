@@ -1,5 +1,4 @@
-import session.InvalidCourseException;
-
+package session;
 public class Course {
   private String dept;
   private int number;
