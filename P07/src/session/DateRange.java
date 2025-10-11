@@ -33,7 +33,7 @@ public class DateRange{
   * Creates a new DateRange Object and calculates the end time with duration
   *
   * @param date the date for a session
-  * @param startTime the startin gtime for a session
+  * @param startTime the starting time for a session
   * @param duration the length of a session in minutes
   * @since 1.0
   */
@@ -44,8 +44,8 @@ public class DateRange{
     
     int startHour = Integer.parseInt(startTime.substring(0, 2));
     int startmin = Integer.parseInt(startTime.substring(3));
-    long totalMin = duration+startmin;
-    int endHour = startHour+ (int)(totalMin/60);
+    long totalMin = startHour * 60 + startmin + duration;
+    int endHour = (int)((totalMin / 60) % 24);
     int endMin = (int)(totalMin%60);
 
     this.endTime = String.format("%02d:%02d", endHour,endMin);
@@ -65,6 +65,7 @@ public class DateRange{
     int endmin = Integer.parseInt(endTime.substring(3));
 
     min = ((endHour-startHour)*60) + (endmin-startmin);
+    if(min<0) min = min * -1;
   
     return min;
   }

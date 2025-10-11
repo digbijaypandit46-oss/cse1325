@@ -21,7 +21,7 @@
   </target>
 
   <target name="javadoc" description="create javadoc">
-      <javadoc packagenames="people,session,rating"
+      <javadoc packagenames="people,session,rating,demo"
            windowtitle="${appname}"
            sourcepath="${src}"
            destdir="${doc}"
@@ -37,7 +37,12 @@
  
   <target name="compile" depends="init,javadoc" description="compile the source and documentation">
     <javac srcdir="${src}" destdir="${target}" 
-           includeantruntime="false" debug="true" failonerror="true"/>
+           includeantruntime="false" debug="true" failonerror="true"
+           source="1.8" target="1.8"/>
+  </target>
+
+  <target name="run" depends="compile" description="run the DemoSession">
+    <java classname="demo.DemoSession" classpath="${target}" fork="true"/>
   </target>
 
   <target name="dist" depends="compile" description="generate the distribution">

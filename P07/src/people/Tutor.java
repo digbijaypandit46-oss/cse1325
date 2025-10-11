@@ -6,7 +6,7 @@ public class Tutor extends Person{
   private int ssn;
   private Course course;
 
-  public Tutor(String name, String email, String bio,int ssn,Course course){
+  public Tutor(String name, String email, int ssn, String bio,Course course){
     super(name, email);
     this.bio=bio;
     this.ssn=ssn;

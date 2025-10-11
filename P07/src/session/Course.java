@@ -25,7 +25,7 @@ public class Course {
   public Course(String dept, int number){
     this.dept =dept;
     this.number = number;
-    if((dept.length() != 3)||(dept.length() != 4)){
+    if((dept.length() != 3)&&(dept.length() != 4)){
       throw new InvalidCourseException(dept);
     }
     if((number<1000)||(number>9999)){
