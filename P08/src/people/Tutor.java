@@ -6,12 +6,12 @@ public class Tutor extends Person{
   private int ssn;
   private Course course;
 
-  public Tutor(String name, String email, int ssn, String bio,Course course){
+  public Tutor(String name, String email, int bio2, String bio,Course course){
     super(name, email);
     this.bio=bio;
-    this.ssn=ssn;
+    this.ssn=bio2;
     this.course=course;
-    if((ssn<001_01_0001)||(ssn>999_99_9999)){
+    if((bio2<001_01_0001)||(bio2>999_99_9999)){
       throw new IllegalArgumentException("Invalid social security number");
     }
   }
