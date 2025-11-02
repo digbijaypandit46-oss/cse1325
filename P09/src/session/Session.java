@@ -4,7 +4,9 @@ import people.Tutor;
 import people.Student;
 
 import java.util.List;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Models a tutoring session on a specific course
@@ -40,6 +42,27 @@ public class Session {
         this.tutor = tutor;
         this.students = new ArrayList<>();
         this.dates = null;
+    }
+    public Session(Scanner in){
+        this.course = new Course(in);
+        this.tutor = new Tutor(in);
+        if (in.hasNextInt()) {
+          int size = in.nextInt();in.nextLine(); 
+          
+          for (int i = 0; i < size; i++) {
+            Student student = new Student(in);
+            students.add(student);
+          }
+        }
+    }
+    public void save(PrintStream out){
+      course.save(out);
+      dates.save(out);
+      tutor.save(out);
+      out.println(students.size());
+      for (Student student: students) {
+        student.save(out);
+      }
     }
     /**
      * Sets or changes the scheduled date, time, and duration.

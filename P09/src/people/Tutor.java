@@ -1,5 +1,8 @@
 package people;
 
+import java.io.PrintStream;
+import java.util.Scanner;
+
 import session.Course;
 
 public class Tutor extends Person {
@@ -16,6 +19,18 @@ public class Tutor extends Person {
         this.ssn = ssn;
         this.bio = bio;
         this.course = course;
+    }
+    public Tutor(Scanner in){
+      super(in);
+      this.bio = in.nextLine();
+      this.ssn = in.nextInt(); in.nextLine();
+      this.course = new Course(in);
+    }
+    public void save(PrintStream out){
+      super.save(out);
+      out.println(bio);
+      out.println(ssn);
+      course.save(out);
     }
     public int getSSN() {
         return ssn;
