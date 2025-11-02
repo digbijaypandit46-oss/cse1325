@@ -5,13 +5,15 @@ import menu.MenuItem;
 
 import session.Course;
 import session.Session;
-
+import people.Person;
 import people.Student;
 import people.Tutor;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-
+import java.io.PrintStream;
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class MavTutor {
     // construct and run the menu
 
     public MavTutor() {
+        this.dirty = false;
         String clearScreen = "\n".repeat(80);    // Scroll all text off display
         
         // BONUS: Splash Screen
@@ -53,7 +56,11 @@ public class MavTutor {
             new MenuItem("View Tutors",   () -> selectView(tutors)),
             new MenuItem("New Tutor",     this::newTutor),
             new MenuItem("View Sessions", () -> selectView(sessions)),
-            new MenuItem("New Session",   this::newSession)
+            new MenuItem("New Session",   this::newSession),
+            new MenuItem("newz", () -> newz()),
+            new MenuItem("save", () -> saveAs()),
+            new MenuItem("saveAs", () -> save()),
+            new MenuItem("open", () -> open())
         );
         // Main loop via the menu package, exit when menu.result == null
         menu.run();
@@ -77,11 +84,11 @@ public class MavTutor {
             return Menu.listToString("Sessions\n========\n\n", sessions, '•');
         return "";
     }
-
-    // ======================================
-    // "Observers" respond to menu selections
     
     private void quit() {
+        if (!safeToDiscardData()) {
+            return;
+        }
         menu.result = null; // Signals menu to exit the main loop
     }
     private void selectView(List list) {
@@ -95,6 +102,7 @@ public class MavTutor {
             if(courses.indexOf(course) == -1) { // No duplicate courses
                 courses.add(course);
                 menu.result.append("Added " + course);
+                setDirty(true);
             } else {
                 menu.result.append("Course " + course + " is already defined!");
             }
@@ -118,6 +126,7 @@ public class MavTutor {
             Tutor tutor = new Tutor(name, email, ssn, bio, courses.get(index));
             tutors.add(tutor);
             menu.result.append("Added tutor " + tutor);
+            setDirty(true);
         } catch(Exception e) {
             menu.result.append("Error adding Tutor: " + e.getMessage());
         }
@@ -141,6 +150,7 @@ public class MavTutor {
             } while(index != null && courses.size() > ++coursesAdded);
             students.add(student);
             menu.result.append("Added student " + student);
+            setDirty(true);
         } catch(Exception e) {
             menu.result.append("Error adding Student: " + e.getMessage());
         }
@@ -190,6 +200,7 @@ public class MavTutor {
 
             sessions.add(session);
             menu.result.append("Added " + session);
+            setDirty(true);
             
         } catch(Exception e) {
             menu.result.append("Error adding Session: " + e.getMessage());
@@ -220,17 +231,162 @@ public class MavTutor {
         tutors.add(new Tutor("Sam Smart", "ss987@uta.edu", 123456789, "Smart!", courses.get(0)));
         tutors.add(new Tutor("Suzuki Rin", "sr636@uta.edu", 123456789, "Suzuki!", courses.get(0)));
         
-        menu.result.append("### S H A Z A M ! ###");      
+        menu.result.append("### S H A Z A M ! ###");    
+        setDirty(true);  
     }
 
-    
+        private void newz() {
+        if (!safeToDiscardData()) {
+            return;
+        }
+        courses.clear();
+        students.clear();
+        tutors.clear();
+        sessions.clear();
+        file = null;
+        setDirty(false);
+        System.out.println("All data cleared.");
+    }
+
+    private void saveAs() {
+        file = null;
+        save();
+    }
+
+    private void save() {
+        if (file == null) {
+            file = Menu.selectFile();
+            if (file == null) {
+                menu.result.append("Save cancelled.");
+                return;
+            }
+        }
+        try (PrintStream out = new PrintStream(file)) {
+            out.println(courses.size());
+            for (Course course : courses) {
+                course.save(out);
+            }
+            
+            out.println(students.size());
+            for (Student student : students) {
+                student.save(out);
+            }
+            
+            out.println(tutors.size());
+            for (Tutor tutor : tutors) {
+                tutor.save(out);
+            }
+            
+            out.println(sessions.size());
+            for (Session session : sessions) {
+                session.save(out);
+            }
+            
+            setDirty(false);
+            System.out.println("Data saved successfully to " + file.getName());
+            
+        } catch (FileNotFoundException e) {
+            System.out.println("Error saving file: " + e.getMessage());
+        }
+    }
+
+    private void open() {
+        if (!safeToDiscardData()) {
+            return;
+        }
+        
+        File openFile = Menu.selectFile();
+        if (openFile == null) {
+            System.out.println("Open cancelled.");
+            return;
+        }
+        
+        try (Scanner in = new Scanner(new FileInputStream(openFile))) {
+            courses.clear();
+            students.clear();
+            tutors.clear();
+            sessions.clear();
+            
+            int courseCount = in.nextInt();
+            in.nextLine(); 
+            for (int i = 0; i < courseCount; i++) {
+                courses.add(new Course(in));
+            }
+            
+            int studentCount = in.nextInt();
+            in.nextLine(); 
+            for (int i = 0; i < studentCount; i++) {
+                students.add(new Student(in));
+            }
+            
+            int tutorCount = in.nextInt();
+            in.nextLine(); 
+            for (int i = 0; i < tutorCount; i++) {
+                tutors.add(new Tutor(in));
+            }
+            
+            int sessionCount = in.nextInt();
+            in.nextLine(); 
+            for (int i = 0; i < sessionCount; i++) {
+                sessions.add(new Session(in));
+            }
+            
+            file = openFile;
+            setDirty(false);
+            System.out.println("Data loaded successfully from " + file.getName());
+            
+        } catch (FileNotFoundException e) {
+            System.out.println("Error opening file: " + e.getMessage());
+            newz();
+        } catch (Exception e) {
+            System.out.println("Error loading data: " + e.getMessage());
+            newz();
+        }
+    }
+
+    // Bonus functionality methods
+    private void setDirty(boolean value) {
+        this.dirty = value;
+    }
+
+    private boolean safeToDiscardData() {
+        if (!dirty) {
+            return true;
+        }
+        
+        while (true) {
+            System.out.println("You have unsaved data. What would you like to do?");
+            System.out.println("(S)ave data");
+            System.out.println("(D)iscard data");
+            System.out.println("(A)bort operation");
+            
+            String choice = System.console().readLine("Enter your choice: ").toUpperCase();
+            
+            switch (choice) {
+                case "S":
+                    save();
+                    return !dirty; 
+                    
+                case "D":
+                    setDirty(false);
+                    return true;
+                    
+                case "A":
+                    return false;
+                    
+                default:
+                    System.out.println("Invalid choice. Please enter S, D, or A.");
+            }
+        }
+    }
     // Our data fields
     
     private List<Course>  courses  = new ArrayList<>();
     private List<Student> students = new ArrayList<>();
     private List<Tutor>   tutors   = new ArrayList<>();
     private List<Session> sessions = new ArrayList<>();
-
+    private File file = null;
+    private boolean dirty;
     // Utility fields
     
     private Menu menu;
