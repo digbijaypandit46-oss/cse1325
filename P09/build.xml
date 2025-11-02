@@ -42,7 +42,7 @@
   </target>
 
   <target name="run" depends="compile" description="run the DemoSession">
-    <java classname="demo.DemoSession" classpath="${target}" fork="true"/>
+    <java classname="demo.DemoTutor" classpath="${target}" fork="true"/>
   </target>
 
   <target name="dist" depends="compile" description="generate the distribution">

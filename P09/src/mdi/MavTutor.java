@@ -245,7 +245,7 @@ public class MavTutor {
         sessions.clear();
         file = null;
         setDirty(false);
-        System.out.println("All data cleared.");
+        menu.result.append("All data cleared.");
     }
 
     private void saveAs() {
@@ -255,7 +255,7 @@ public class MavTutor {
 
     private void save() {
         if (file == null) {
-            file = Menu.selectFile();
+            file = Menu.selectFile(null, file, null);
             if (file == null) {
                 menu.result.append("Save cancelled.");
                 return;
@@ -283,7 +283,7 @@ public class MavTutor {
             }
             
             setDirty(false);
-            System.out.println("Data saved successfully to " + file.getName());
+            menu.result.append("Data saved successfully to " + file.getName());
             
         } catch (FileNotFoundException e) {
             System.out.println("Error saving file: " + e.getMessage());
@@ -295,9 +295,9 @@ public class MavTutor {
             return;
         }
         
-        File openFile = Menu.selectFile();
+        File openFile = Menu.selectFile(null, null, null);
         if (openFile == null) {
-            System.out.println("Open cancelled.");
+            menu.result.append("Open cancelled.");
             return;
         }
         
@@ -333,13 +333,13 @@ public class MavTutor {
             
             file = openFile;
             setDirty(false);
-            System.out.println("Data loaded successfully from " + file.getName());
+            menu.result.append("Data loaded successfully from " + file.getName());
             
         } catch (FileNotFoundException e) {
-            System.out.println("Error opening file: " + e.getMessage());
+            menu.result.append("Error opening file: " + e.getMessage());
             newz();
         } catch (Exception e) {
-            System.out.println("Error loading data: " + e.getMessage());
+            menu.result.append("Error loading data: " + e.getMessage());
             newz();
         }
     }
