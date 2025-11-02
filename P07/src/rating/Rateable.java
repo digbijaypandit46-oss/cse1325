@@ -1,6 +1,6 @@
 package rating;
 public interface Rateable {
-  public void addRating(Rating rating);
-  public double getAverageRating();
-  public Rating[] getRatings();
+  void addRating(Rating rating);
+  double getAverageRating();
+  Rating[] getRatings();
 }
