@@ -9,6 +9,8 @@ import people.Person;
 import people.Student;
 import people.Tutor;
 import rating.Rateable;
+import rating.Rating;
+import rating.Comment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -82,10 +84,83 @@ public class MavTutor {
         } else {
           menu.result.append("Average rating: " + String.format("%.1f", average));
         }
+        Person reviewer = login();
+
+        if (reviewer != null) {
+          int stars = Menu.getInt("Enter rating (1-5 stars): ");
+          String reviewText = Menu.getString("Enter review comment: ");
+          Rating rating = new Rating(stars, new Comment(reviewText, reviewer, null));
+          item.addRating(rating);
+          setDirty(true);
+          menu.result.append("Rating added!");
+        }
+        Rating[] ratings = item.getRatings();
+        if (ratings.length == 0) {
+          menu.result.append("No ratings to display.");
+          return;
+        }
+        boolean browsing = true;
+        while (browsing) {
+          index = Menu.selectItemFromArray("Select rating to view comments: ", ratings);
+          if (index == null) break;
+            
+          Rating selectedRating = ratings[index];
+          Comment currentComment = selectedRating.getReview();
+          while (browsing) {
+            System.out.println("\n".repeat(5)); // Clear some space
+            printExpandedComments(currentComment, 0);
+            List<String> options = new ArrayList<>();
+            options.add("Reply");
+            if (currentComment.getInReplyTo() != null) options.add("Up");
+            if (currentComment.numReplies() > 0) options.add("Down");
+            options.add("Main Menu");
+            Integer choice = Menu.selectItemFromArray("Choose action: ", options.toArray(new String[0]));
+            if (choice == null) break;
+            String selected = options.get(choice);
+            switch (selected) {
+              case "Reply":
+                String replyText = Menu.getString("Enter your reply: ");
+                if (replyText != null && !replyText.trim().isEmpty()) {
+                  currentComment.addReply(replyText, user);
+                  setDirty(true);
+                  menu.result.append("Reply added!");
+                }
+                break;
+                  
+              case "Up":
+                if (currentComment.getInReplyTo() != null) {
+                  currentComment = currentComment.getInReplyTo();
+                }
+                break;
+                  
+              case "Down":
+                if (currentComment.numReplies() > 0) {
+                  Integer replyIndex = Menu.getInt("Select reply (0-" + 
+                    (currentComment.numReplies() - 1) + "): ", 0, comment.numReplies() - 1);
+                  if (replyIndex != null) {
+                    currentComment = currentComment.getReply(replyIndex);
+                  }
+                }
+                break;
+                  
+              case "Main Menu":
+                browsing = false;
+                break;
+            }
+          }
+        }
 
       } catch (Exception e) {
         menu.result.append("Error in review: " + e.getMessage());
       }
+    }
+    private Person login(){
+      if (user == null) {
+        String[] options = {"Cancel login", "Tutor login", "Student login"};
+        Integer choice = Menu.selectItemFromArray("Login options: ", options);
+        if (choice == null || choice == 0) return null;
+      }
+      return user;
     }
     public static void main(String[] args) {
         new MavTutor(); // The constructor starts the main loop1
@@ -401,7 +476,17 @@ public class MavTutor {
             }
         }
     }
-    
+    private static void printIndented(String multiline, int level) {
+        String[] strings = multiline.split("\n");
+        for(String s : strings) 
+            System.out.println("  ".repeat(level) + s);
+    }
+    private static void printExpandedComments(Comment c, int level) {
+        printIndented(c.toString(), level);
+        System.out.println("\n");
+        for(int i=0; i<c.numReplies(); ++i)
+            printExpandedComments(c.getReply(i), level+1);
+    }
     
     private List<Course>  courses  = new ArrayList<>();
     private List<Student> students = new ArrayList<>();
@@ -410,9 +495,8 @@ public class MavTutor {
     private File file = null;
     private boolean dirty;
     // Utility fields
-    
     private Menu menu;
     private List view = courses; // List to view via toString()
-    
     private List<String> logo = new ArrayList<>();
+    private Person user = null;
 }
