@@ -8,6 +8,7 @@ import session.Session;
 import people.Person;
 import people.Student;
 import people.Tutor;
+import rating.Rateable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,17 +54,38 @@ public class MavTutor {
             new MenuItem("New Course",    this::newCourse),   // method reference
             new MenuItem("View Students", () -> selectView(students)),
             new MenuItem("New Student",   this::newStudent),
+            new MenuItem("Review Students", () -> review(students)),
             new MenuItem("View Tutors",   () -> selectView(tutors)),
             new MenuItem("New Tutor",     this::newTutor),
+            new MenuItem("Review Tutors", () -> review(tutors)),
             new MenuItem("View Sessions", () -> selectView(sessions)),
             new MenuItem("New Session",   this::newSession),
+            new MenuItem("Review Sessions", () -> review(sessions)),
             new MenuItem("newz", () -> newz()),
             new MenuItem("save", () -> saveAs()),
             new MenuItem("saveAs", () -> save()),
             new MenuItem("open", () -> open())
+
         );
         // Main loop via the menu package, exit when menu.result == null
         menu.run();
+    }
+    private void review(List<? extends Rateable> list){
+      try {
+        Integer index = Menu.selectItemFromList("Select item to review: ", list);
+        if (index == null) return;
+
+        Rateable item = list.get(index);
+        double average = item.getAverageRating();
+        if (Double.isNaN(average)) {
+          menu.result.append("No ratings yet.");
+        } else {
+          menu.result.append("Average rating: " + String.format("%.1f", average));
+        }
+
+      } catch (Exception e) {
+        menu.result.append("Error in review: " + e.getMessage());
+      }
     }
     public static void main(String[] args) {
         new MavTutor(); // The constructor starts the main loop1
@@ -379,7 +401,7 @@ public class MavTutor {
             }
         }
     }
-    // Our data fields
+    
     
     private List<Course>  courses  = new ArrayList<>();
     private List<Student> students = new ArrayList<>();
