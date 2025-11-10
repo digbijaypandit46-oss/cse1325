@@ -107,7 +107,7 @@ public class MavTutor {
           Rating selectedRating = ratings[index];
           Comment currentComment = selectedRating.getReview();
           while (browsing) {
-            System.out.println("\n".repeat(5)); // Clear some space
+            System.out.println("\n".repeat(5)); 
             printExpandedComments(currentComment, 0);
             List<String> options = new ArrayList<>();
             options.add("Reply");
@@ -149,16 +149,56 @@ public class MavTutor {
             }
           }
         }
-
       } catch (Exception e) {
         menu.result.append("Error in review: " + e.getMessage());
       }
     }
     private Person login(){
       while(true){
-
+      if (user == null) {
+        String[] options = {"Cancel login", "Tutor login", "Student login"};
+        Integer choice = Menu.selectItemFromArray("Login options: ", options);
+        if (choice == null || choice == 0) return null; 
+        if (choice == 1) {
+          Integer index = Menu.selectItemFromList("Select tutor: ", tutors);
+          if (index != null) {
+            user = tutors.get(index);
+            return user;
+          }
+        } else if (choice == 2) {
+          Integer index = Menu.selectItemFromList("Select student: ", students);
+          if (index != null) {
+            user = students.get(index);
+            return user;
+          }
+        }
+      } else {
+        String[] options = {
+          "Continue as " + user, 
+          "Tutor login", 
+          "Student login", 
+          "Log out"
+        };
+          Integer choice = Menu.selectItemFromArray("Login options: ", options);
+          if (choice == null || choice == 0) return user;
+          if (choice == 1) {
+            Integer index = Menu.selectItemFromList("Select tutor: ", tutors);
+            if (index != null) {
+              user = tutors.get(index);
+              return user;
+            }
+          } else if (choice == 2) {
+            Integer index = Menu.selectItemFromList("Select student: ", students);
+            if (index != null) {
+              user = students.get(index);
+              return user;
+            }
+          } else if (choice == 3) {
+            user = null;
+            return null;
+          }
+        }
       }
-      return user;
     }
     public static void main(String[] args) {
         new MavTutor(); // The constructor starts the main loop1
