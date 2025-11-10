@@ -136,7 +136,7 @@ public class MavTutor {
               case "Down":
                 if (currentComment.numReplies() > 0) {
                   Integer replyIndex = Menu.getInt("Select reply (0-" + 
-                    (currentComment.numReplies() - 1) + "): ", 0, comment.numReplies() - 1);
+                    (currentComment.numReplies() - 1) + "): ");
                   if (replyIndex != null) {
                     currentComment = currentComment.getReply(replyIndex);
                   }
@@ -155,10 +155,8 @@ public class MavTutor {
       }
     }
     private Person login(){
-      if (user == null) {
-        String[] options = {"Cancel login", "Tutor login", "Student login"};
-        Integer choice = Menu.selectItemFromArray("Login options: ", options);
-        if (choice == null || choice == 0) return null;
+      while(true){
+
       }
       return user;
     }
